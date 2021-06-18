@@ -3,37 +3,53 @@ import { debounce } from 'lodash'
 import FolderComponent from './FolderComponent/FolderComponent'
 import { searchFile } from '../helpers/helpers'
 import { getData } from '../api/api'
+import {File, Folder} from "../models/models";
 
-class MyBrowser extends Component {
+interface IProps{
+  extendedFolders: string[] | null
+}
+
+interface IState{
+  data: (Folder| File)[];
+  filteredData: (Folder| File)[] | null;
+  search: string;
+  openAll: boolean;
+}
+
+class MyBrowser extends Component<IProps, IState> {
   state = {
-    data: null, filteredData: null, search: '', openAll: false,
+    data: [], filteredData: [], search: '', openAll: false,
   }
+  searchFunc = debounce((search: string) => {
+    this.setState((state: IState): IState => {
+      if (!search) {
+        return {
+          ...state,
+          filteredData: state.data,
+          openAll: false
+        }
+      }
+      return {
+        ...state,
+        filteredData: searchFile(search, state.data),
+        openAll: true,
+      }
+    })
+  }, 500)
 
   componentDidMount = async () => {
     const data = await getData()
     this.setState({ data, filteredData: data })
   }
 
-  onSearch = (e) => {
+  onSearch = (e:React.ChangeEvent<HTMLInputElement>) => {
     const search = e.target.value
     this.setState({
       search,
     }, () => {
-      this.searchFunc()
+      this.searchFunc(search)
     })
   }
-
-  searchFunc = debounce(() => {
-    this.setState((state) => {
-      const { search } = state
-      if (!search) {
-        return { ...state, filteredData: state.data, openAll: false }
-      }
-      return {
-        ...state, filteredData: searchFile(search, state.data), openAll: true,
-      }
-    })
-  }, 500)
 
   render () {
     const { filteredData, search, openAll } = this.state
@@ -41,7 +57,7 @@ class MyBrowser extends Component {
     return <div>
       <input type="text" placeholder="Search file" onChange={this.onSearch}
              value={search}/>
-      {!!filteredData && filteredData.map(item => <FolderComponent
+      {filteredData?.map((item: Folder) => <FolderComponent
         data={item}
         key={item.name}
         openAll={openAll}
