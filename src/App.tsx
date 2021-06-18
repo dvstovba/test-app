@@ -1,6 +1,6 @@
 import MyBrowser from './components/MyBrowser'
 
-function App () {
+function App() {
   return (
     <div className="App">
       <MyBrowser

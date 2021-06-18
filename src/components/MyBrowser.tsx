@@ -1,17 +1,17 @@
-import { Component } from 'react'
-import { debounce } from 'lodash'
+import {Component} from 'react'
+import {debounce} from 'lodash'
 import FolderComponent from './FolderComponent/FolderComponent'
-import { searchFile } from '../helpers/helpers'
-import { getData } from '../api/api'
+import {searchFile} from '../helpers/helpers'
+import {getData} from '../api/api'
 import {File, Folder} from "../models/models";
 
-interface IProps{
+interface IProps {
   extendedFolders: string[] | null
 }
 
-interface IState{
-  data: (Folder| File)[];
-  filteredData: (Folder| File)[] | null;
+interface IState {
+  data: (Folder | File)[];
+  filteredData: (Folder | File)[] | null;
   search: string;
   openAll: boolean;
 }
@@ -20,6 +20,7 @@ class MyBrowser extends Component<IProps, IState> {
   state = {
     data: [], filteredData: [], search: '', openAll: false,
   }
+
   searchFunc = debounce((search: string) => {
     this.setState((state: IState): IState => {
       if (!search) {
@@ -39,10 +40,10 @@ class MyBrowser extends Component<IProps, IState> {
 
   componentDidMount = async () => {
     const data = await getData()
-    this.setState({ data, filteredData: data })
+    this.setState({data, filteredData: data})
   }
 
-  onSearch = (e:React.ChangeEvent<HTMLInputElement>) => {
+  onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const search = e.target.value
     this.setState({
       search,
@@ -51,9 +52,9 @@ class MyBrowser extends Component<IProps, IState> {
     })
   }
 
-  render () {
-    const { filteredData, search, openAll } = this.state
-    const { extendedFolders } = this.props
+  render() {
+    const {filteredData, search, openAll} = this.state
+    const {extendedFolders} = this.props
     return <div>
       <input type="text" placeholder="Search file" onChange={this.onSearch}
              value={search}/>
