@@ -1,0 +1,33 @@
+.folder-component {
+    padding: 0 0 0 20px;
+    margin-bottom: 10px;
+}
+
+.folder-component-btn-wrapper {
+    position: relative;
+    left: -10px;
+    bottom: -10px;
+}
+
+.folder-component-btn-wrapper:before {
+    position: absolute;
+    content: '';
+    top: 11px;
+    left: -10px;
+    width: 10px;
+    height: 0;
+    border-top: 1px dotted #000;
+}
+
+.folder-component-btn {
+    width: 21px;
+    height: 21px;
+    text-align: center;
+    margin-right: 5px;
+}
+
+.folder-component-list {
+    border-left: 1px dotted #000;
+    padding-top: 10px;
+    margin-bottom: 10px;
+}
