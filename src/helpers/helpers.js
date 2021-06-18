@@ -1,15 +1,15 @@
-export const getExtendedListForCurrentFolder = (name, list) => {
-  if (!name || !list) return null;
+export const getCurrentExtended = (name, list) => {
+  if (!(name && list)) return null
   const res = list.reduce((accum, current) => {
-    const folderNames = current.split('/');
+    const folderNames = current.split('/')
     if (folderNames[0] === name) {
-      folderNames.shift();
+      folderNames.shift()
       return [...accum, folderNames.join('/')]
     }
     return accum
-  }, []);
+  }, [])
   if (res.length) return res
-  return null;
+  return null
 }
 
 export const searchFile = (what, where) => {
@@ -20,10 +20,10 @@ export const searchFile = (what, where) => {
     if (current.type === 'FOLDER' && current.children) {
       const result = searchFile(what, current.children)
       if (result.length) {
-        return [...accum, {
-          ...current,
-          children: result
-        }]
+        return [
+          ...accum, {
+            ...current, children: result,
+          }]
       }
     }
     return [...accum]

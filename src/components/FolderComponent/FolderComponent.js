@@ -1,23 +1,22 @@
-import {Component} from "react";
-import FileComponent from "../FileComponent/FileComponent";
-import {getExtendedListForCurrentFolder} from "../../helpers/helpers";
+import { PureComponent } from 'react'
+import FileComponent from '../FileComponent/FileComponent'
+import { getCurrentExtended } from '../../helpers/helpers'
 import './FolderComponent.css'
 
-class FolderComponent extends Component {
+class FolderComponent extends PureComponent {
   state = {
-    open: false,
-    expandedList: null
+    open: false, expandedList: null,
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (!this.props.openAll) {
       this.setOpen()
     }
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate (prevProps, prevState) {
     if (!prevState.open && this.props.openAll) {
-      this.setState({open: true})
+      this.setState({ open: true })
     }
     if (prevProps.openAll && !this.props.openAll && !this.state.expandedList) {
       this.setOpen()
@@ -25,48 +24,43 @@ class FolderComponent extends Component {
   }
 
   setOpen = () => {
-    const expandedList = getExtendedListForCurrentFolder(this.props.data.name, this.props.extendedFolders);
+    const expandedList = getCurrentExtended(this.props.data.name,
+      this.props.extendedFolders)
     let open = !!expandedList
-    this.setState({open, expandedList});
+    this.setState({ open, expandedList })
   }
 
-  render() {
-    const {data, openAll} = this.props;
+  render () {
+    const { data, openAll } = this.props
 
-    const {open, expandedList} = this.state;
+    const { open, expandedList } = this.state
 
-    return (<div className='folder-component'>
-      <div className='folder-component-btn-wrapper'>
-        <button
-          className='folder-component-btn'
-          disabled={!data || !data.children || !data.children.length}
-          onClick={() => {
-            this.setState({open: !open})
-          }}>
-          {open && '-'}
-          {!open && '+'}
-        </button>
-        <b>{data.name}</b>
-      </div>
-      {(open && data.children) && <div className='folder-component-list'>
-        {data.children.map(item => {
-          if (item.type === 'FOLDER') {
-            return <FolderComponent data={item}
-                                    key={item.name}
-                                    extendedFolders={expandedList}
-                                    openAll={openAll}
-            />
-          }
-          if (item.type === 'FILE') {
-            return <FileComponent
-              data={item}
-              key={item.name}
-            />
-          }
-          return null
-        })}
-      </div>}
-    </div>)
+    return (<div className="folder-component">
+        <div className="folder-component-btn-wrapper">
+          <button
+            className="folder-component-btn"
+            disabled={!data?.children?.length}
+            onClick={() => {
+              this.setState({ open: !open })
+            }}>
+            {open ? '-' : '+'}
+          </button>
+          <b>{data.name}</b>
+        </div>
+        {open && data.children && (<div className="folder-component-list">
+            {data.children.map((item) => {
+              if (item.type === 'FOLDER') {
+                return <FolderComponent data={item} key={item.name}
+                                        extendedFolders={expandedList}
+                                        openAll={openAll}/>
+              }
+              if (item.type === 'FILE') {
+                return <FileComponent data={item} key={item.name}/>
+              }
+              return null
+            })}
+          </div>)}
+      </div>)
   }
 }
 
